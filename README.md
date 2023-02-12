@@ -90,3 +90,25 @@ nest g module order
 ```
 
 Os comandos acima criará uma pasta **product, cart e order** na pasta **src** do projeto com os templetes básicos e registrará esses módulos no módulo app raiz do projeto.
+
+
+# Configurando bancos de dados TypeORM e SQLite
+
+- Com os módulos de aplicativo instalados, configure o **TypeORM** para conectar seu aplicativo ao banco de dados **SQLite** e criar suas entidades de módulo. Para começar, abra o **app.module.ts** e configure seu banco de dados **SQLite** com os trechos de código abaixo:
+
+```typescript
+imports: [
+ …
+ TypeOrmModule.forRoot({
+   type :"sqlite",
+   database: "shoppingDB",
+   entities: [__dirname + "/**/*.entity{.ts,.js}"],
+   synchronize: true
+ })
+],
+…
+```
+
+- No trecho de código acima, você conectou o aplicativo a um banco de dados **SQLite** usando o **TypeORM** **forRoot**, especificando o tipo de banco de dados, o nome do banco de dados e o local onde o **Nestjs** pode encontrar as entidades de modelo.
+
+- Assim que o servidor for atualizado, você deverá ver um arquivo **shoppingDB** criado no diretório raiz deste projeto.
