@@ -60,3 +60,33 @@ npm install --save-dev @types/passport-local @types/passport-jwt @types/bcrypt
 ```
 
 Você pode tomar uma xícara de café enquanto o npm instala os pacotes. Assim que a instalação estiver concluída, vamos colocar a mão na massa.
+
+
+# Criar módulos de aplicativo
+
+- Com todos os pacotes necessários para executar o aplicativo, vamos prosseguir para a criação dos módulos do aplicativo. Para criar um aplicativo limpo e de fácil manutenção, você gerará módulos separados para todos os recursos implementados nesse aplicativo. Como este é um aplicativo de comércio eletrônico, você terá autenticação, carrinho, produtos e pedidos. Todos estes estarão em seus próprios módulos separados. Vamos começar com o módulo de autenticação.
+
+## Criar módulo de autenticação
+
+- Gere um módulo de autenticação com o comando abaixo:
+
+```bash
+nest g module auth
+```
+
+- O comando acima cria uma pasta **auth** no diretório **src** do projeto com os templates necessários e registra o módulo no módulo raiz do projeto (arquivo app.module.ts).
+
+- Em seguida, crie os módulos **product, cart, order**, com o comando abaixo:
+
+```bash
+#Create a product module
+nest g module product
+
+#Create cart module
+nest g module cart
+
+#Create cart module
+nest g module order
+```
+
+Os comandos acima criará uma pasta **product, cart e order** na pasta **src** do projeto com os templetes básicos e registrará esses módulos no módulo app raiz do projeto.
