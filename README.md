@@ -8,7 +8,7 @@
 # configurando o projeto
 
 - Para começar a usar o Nestjs, instale a CLI do Nestjs com o comando abaixo:
-  
+
 ```bash
 npm i -g @nestjs/cli
 ```
@@ -39,13 +39,13 @@ npm run start:dev
 
 - Agora instale as seguintes dependências:
 
-1.Passport
-2.Passport-local
-3.Jwt
-4.Passport-jwt
-5.SQLIte3
-6.TypeORM
-7.Bcrypt
+  1.Passport
+  2.Passport-local
+  3.Jwt
+  4.Passport-jwt
+  5.SQLIte3
+  6.TypeORM
+  7.Bcrypt
 
 - Você pode fazer isso com o comando abaixo:
 
@@ -60,7 +60,6 @@ npm install --save-dev @types/passport-local @types/passport-jwt @types/bcrypt
 ```
 
 Você pode tomar uma xícara de café enquanto o npm instala os pacotes. Assim que a instalação estiver concluída, vamos colocar a mão na massa.
-
 
 # Criar módulos de aplicativo
 
@@ -91,7 +90,6 @@ nest g module order
 
 Os comandos acima criará uma pasta **product, cart e order** na pasta **src** do projeto com os templetes básicos e registrará esses módulos no módulo app raiz do projeto.
 
-
 # Configurando bancos de dados TypeORM e SQLite
 
 - Com os módulos de aplicativo instalados, configure o **TypeORM** para conectar seu aplicativo ao banco de dados **SQLite** e criar suas entidades de módulo. Para começar, abra o **app.module.ts** e configure seu banco de dados **SQLite** com os trechos de código abaixo:
@@ -112,3 +110,197 @@ imports: [
 - No trecho de código acima, você conectou o aplicativo a um banco de dados **SQLite** usando o **TypeORM** **forRoot**, especificando o tipo de banco de dados, o nome do banco de dados e o local onde o **Nestjs** pode encontrar as entidades de modelo.
 
 - Assim que o servidor for atualizado, você deverá ver um arquivo **shoppingDB** criado no diretório raiz deste projeto.
+
+# Criar modelos de entidade de aplicativo
+
+- Com a configuração do banco de dados, vamos criar os modelos de entidade para nossos módulos de aplicativo. Começaremos com o módulo **auth**. Gere um arquivo de entidade na pasta do módulo **auth** com o comando abaixo:
+
+```bash
+nest generate class auth/user.entity –flat
+```
+
+- Em seguida, adicione o trecho de código abaixo para definir as propriedades da tabela do usuário com o trecho de código abaixo:
+
+```typescript
+import {
+  Entity,
+  OneToOne,
+  JoinColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  PrimaryGeneratedColumn,
+  OneToMany,
+} from 'typeorm';
+import { CartEntity } from 'src/cart/cart.entity';
+import { OrderEntity } from 'src/order/order.entity';
+
+@Entity()
+export class Users {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  username: string;
+
+  @Column()
+  password: string;
+
+  @Column()
+  role: string;
+
+  @CreateDateColumn()
+  createdAt: String;
+
+  @UpdateDateColumn()
+  updatedAt: String;
+
+  @OneToMany((type) => CartEntity, (cart) => cart.id)
+  @JoinColumn()
+  cart: CartEntity[];
+
+  @OneToOne((type) => OrderEntity, (order) => order.id)
+  @JoinColumn()
+  order: OrderEntity;
+}
+```
+
+- No trecho de código, você importou os decoradores necessários para configurar sua tabela de banco de dados. Você também importou as classes **cartEntity** e **orderEntity** que criará em breve. Usando o decorador **typeorm**, definimos as propriedades do banco de dados do modelo do usuário. Por fim, criamos relacionamentos um-para-um e um-para-muitos entre a entidade **users** e **cartEntity** e **orderEntity**. Dessa forma, você pode associar um item do carrinho a um usuário. O mesmo se aplica ao pedido do usuário.
+
+- A seguir, crie a classe entidade produto com o comando abaixo:
+
+```bash
+nest generate class product/product.entity –flat
+```
+
+- O comando acima irá gerar um arquivo **product.entity.ts** na pasta do módulo **products**.
+
+Agora configure as propriedades da tabela de produtos com o trecho de código abaixo:
+
+```typescript
+import {
+  Entity,
+  JoinColumn,
+  OneToMany,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { CartEntity } from 'src/cart/cart.entity';
+
+@Entity()
+export class ProductEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id!: number;
+
+  @Column()
+  name: string;
+
+  @Column()
+  price: number;
+
+  @Column()
+  quantity: string;
+
+  @CreateDateColumn()
+  createdAt: String;
+
+  @UpdateDateColumn()
+  updatedAt: String;
+
+  @OneToMany((type) => CartEntity, (cart) => cart.id)
+  @JoinColumn()
+  cart: CartEntity[];
+}
+```
+
+- No trecho de código acima, configuramos as propriedades da tabela **product** e criamos um relacionamento um-para-muitos com a entidade **cart**.
+
+Em seguida crie a entidade **cart** com o comando abaixo:
+
+```bash
+nest generate class cart/cart.entity –flat
+```
+
+- O comando acima irá gerar um arquivo **cart.entity.ts** na pasta do módulo **cart**. Agora adicione o trecho de código abaixo ao arquivo que você criou para configurar as propriedades da tabela **cart**.
+
+```typescript
+import {
+  Entity,
+  OneToOne,
+  ManyToOne,
+  JoinColumn,
+  Column,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { OrderEntity } from 'src/order/order.entity';
+import { ProductEntity } from 'src/product/product.entity';
+import { Users } from 'src/auth/user.entity';
+
+@Entity()
+export class CartEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id: number;
+
+  @Column()
+  total: number;
+
+  @Column()
+  quantity: number;
+
+  @ManyToOne((type) => ProductEntity, (order) => order.id)
+  @JoinColumn()
+  item: ProductEntity;
+
+  @ManyToOne((type) => Users, (user) => user.username)
+  @JoinColumn()
+  user: Users;
+}
+```
+
+- No trecho de código acima, você configurou as propriedades da tabela **cart**, criou um relacionamento muitos-para-um entre a entidade **cart** e um relacionamento muitos-para-um com a entidade do **users**.
+
+- Por fim, crie a entidade **order** com o comando abaixo:
+
+```bash
+nest generate class order/order.entity –flat
+```
+
+- O comando acima irá gerar um arquivo **order.entity.ts** na pasta do módulo de **order**. Abra o **order.entity.ts** e configure a tabela do banco de dados com o comando abaixo:
+
+```typescript
+import {
+  Entity,
+  OneToMany,
+  JoinColumn,
+  OneToOne,
+  Column,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { ProductEntity } from 'src/product/product.entity';
+import { Users } from 'src/auth/user.entity';
+
+@Entity()
+export class OrderEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id: number;
+
+  @OneToMany((type) => ProductEntity, (item) => item.id)
+  items: ProductEntity[];
+
+  @OneToOne((type) => Users, (user) => user.username)
+  @JoinColumn()
+  user: Users;
+
+  @Column()
+  subTotal: number;
+
+  @Column({ default: false })
+  pending: boolean;
+}
+```
+
+- No trecho de código acima, você criou um relacionamento um-para-um entre a entidade **users** e um relacionamento um-para-muitos com a entidade **products**.
+
+- Neste ponto, suas entidades de banco de dados estão configuradas e conectadas. Agora crie sua lógica de negócios para armazenar registros nessas entidades.
