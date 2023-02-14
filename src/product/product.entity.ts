@@ -7,7 +7,7 @@ import {
   UpdateDateColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { CartEntity } from 'src/cart/cart.entity/cart.entity';
+import { CartEntity } from 'src/cart/cart.entity';
 
 @Entity()
 export class ProductEntity {

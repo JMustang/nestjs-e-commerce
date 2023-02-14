@@ -8,8 +8,8 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
 } from 'typeorm';
-import { CartEntity } from 'src/cart/cart.entity/cart.entity';
-import { OrderEntity } from 'src/order/order.entity/order.entity';
+import { CartEntity } from 'src/cart/cart.entity';
+import { OrderEntity } from 'src/order/order.entity';
 
 @Entity()
 export class Users {
