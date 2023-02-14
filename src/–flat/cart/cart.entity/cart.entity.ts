@@ -6,9 +6,9 @@ import {
   Column,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { OrderEntity } from 'src/–flat/order/order.entity';
-import { ProductEntity } from 'src/–flat/product/product.entity';
-import { Users } from 'src/–flat/auth/user.entity';
+import { OrderEntity } from './order/order.entity';
+import { ProductEntity } from './product/product.entity';
+import { Users } from './auth/user.entity';
 
 @Entity()
 export class CartEntity {
