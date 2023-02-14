@@ -7,8 +7,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { CartEntity } from 'src/cart/cart.entity';
-import { OrderEntity } from 'src/order/order.entity';
+import { CartEntity } from 'src/–flat/cart/cart.entity';
+import { OrderEntity } from 'src/–flat/order/order.entity';
 
 @Entity()
 export class UserEntity {
