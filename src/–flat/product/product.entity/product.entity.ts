@@ -1,28 +1,27 @@
 import {
-  Column,
-  CreateDateColumn,
   Entity,
   JoinColumn,
   OneToMany,
-  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
   UpdateDateColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { CartEntity } from 'src/cart/cart.entity';
-import { OrderEntity } from 'src/order/order.entity';
 
 @Entity()
-export class UserEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+export class ProductEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id!: number;
 
   @Column()
-  username: string;
+  name: string;
 
   @Column()
-  password: string;
+  price: number;
 
   @Column()
-  role: string;
+  quantity: string;
 
   @CreateDateColumn()
   createdAt: string;
@@ -33,8 +32,4 @@ export class UserEntity {
   @OneToMany((type) => CartEntity, (cart) => cart.id)
   @JoinColumn()
   cart: CartEntity[];
-
-  @OneToMany((type) => OrderEntity, (order) => order.id)
-  @JoinColumn()
-  order: OrderEntity;
 }
