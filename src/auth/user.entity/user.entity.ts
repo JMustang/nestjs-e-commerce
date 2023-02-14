@@ -1,17 +1,18 @@
 import {
+  Entity,
+  OneToOne,
+  JoinColumn,
   Column,
   CreateDateColumn,
-  Entity,
-  JoinColumn,
-  OneToMany,
-  PrimaryGeneratedColumn,
   UpdateDateColumn,
+  PrimaryGeneratedColumn,
+  OneToMany,
 } from 'typeorm';
-import { CartEntity } from './cart/cart.entity';
-import { OrderEntity } from './order/order.entity';
+import { CartEntity } from 'src/cart/cart.entity/cart.entity';
+import { OrderEntity } from 'src/order/order.entity/order.entity';
 
 @Entity()
-export class UserEntity {
+export class Users {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -34,7 +35,7 @@ export class UserEntity {
   @JoinColumn()
   cart: CartEntity[];
 
-  @OneToMany((type) => OrderEntity, (order) => order.id)
+  @OneToOne((type) => OrderEntity, (order) => order.id)
   @JoinColumn()
   order: OrderEntity;
 }
