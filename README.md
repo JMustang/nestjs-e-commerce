@@ -165,9 +165,9 @@ export class Users {
 }
 ```
 
-- No trecho de código, você importou os decoradores necessários para configurar sua tabela de banco de dados. Você também importou as classes **cartEntity** e **orderEntity** que criará em breve. Usando o decorador **typeorm**, definimos as propriedades do banco de dados do modelo do usuário. Por fim, criamos relacionamentos um-para-um e um-para-muitos entre a entidade **users** e **cartEntity** e **orderEntity**. Dessa forma, você pode associar um item do carrinho a um usuário. O mesmo se aplica ao pedido do usuário.
+- No trecho de código, você importou os decoradores necessários para configurar sua tabela de banco de dados. Você também importou as classes **cartEntity** e **orderEntity** que criaremos em breve. Usando o decorador **typeorm**, definimos as propriedades do banco de dados do modelo do user. Por fim, criamos relacionamentos **OneToOne** e **OneToMany** entre a entidade **users** e **cartEntity** e **orderEntity**. Dessa forma, você pode associar um item do cart a um user. O mesmo se aplica ao pedido do user.
 
-- A seguir, crie a classe entidade produto com o comando abaixo:
+- A seguir, crie a classe entity product com o comando abaixo:
 
 ```bash
 nest generate class product/product.entity –flat
@@ -175,7 +175,7 @@ nest generate class product/product.entity –flat
 
 - O comando acima irá gerar um arquivo **product.entity.ts** na pasta do módulo **products**.
 
-Agora configure as propriedades da tabela de produtos com o trecho de código abaixo:
+Agora configure as propriedades da tabela de products com o trecho de código abaixo:
 
 ```typescript
 import {
