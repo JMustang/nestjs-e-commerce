@@ -304,3 +304,180 @@ export class OrderEntity {
 - No trecho de código acima, você criou um relacionamento um-para-um entre a entidade **users** e um relacionamento um-para-muitos com a entidade **products**.
 
 - Neste ponto, suas entidades de banco de dados estão configuradas e conectadas. Agora crie sua lógica de negócios para armazenar registros nessas entidades.
+
+# Criando os serviços
+
+- Agora crie os serviços para os módulos neste aplicativo. Aqui, você permitirá que o administrador adicione produtos à tabela de produtos, autentique usuários, permita que os usuários adicionem os produtos da loja ao carrinho e solicitem o produto por meio do carrinho.
+
+## Criar o Auth Service
+
+- Para criar o serviço de autenticação, execute o comando abaixo para gerar o serviço para o módulo de autenticação.
+
+```bash
+nest g service auth/service/auth --flat
+```
+
+- O comando acima irá gerar um arquivo **auth.service.ts** na pasta **src/auth/service**. Agora abra o arquivo **auth.service.ts** e adicione o trecho de código abaixo:
+
+```typescript
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Users } from '../user.entity';
+import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+
+@Injectable()
+export class AuthService {
+  constructor(
+    @InjectRepository(Users) private userRepository: Repository<Users>,
+    private jwt: JwtService,
+  ) {}
+}
+```
+
+- No trecho de código acima, você importou os módulos **InjectRepository**, **Repository** **decorator**, **JwtService** e **bcrypt**. Em seguida, usando o decorador **InjectRepository**, você disponibilizou a classe de entidade User no serviço de autenticação, fornecendo o método para realizar operações CRUD em sua entidade **User**.
+
+- Em seguida, crie um método de inscrição para permitir que os usuários se registrem no aplicativo com o trecho de código abaixo:
+
+```typescript
+async signup(user: Users): Promise<Users> {
+       const salt = await bcrypt.genSalt();
+       const hash = await bcrypt.hash(user.password, salt);
+       user.password = hash
+       return await this.userRepository.save(user);
+   }
+```
+
+- Now create the validateUser method to validate the users' details and the login method to generate a jwt token for the authenticated user.
+
+```typescript
+…
+ async validateUser(username: string, password: string): Promise<any> {
+       const foundUser = await this.userRepository.findOne({ username });
+       if (foundUser) {
+           if (await bcrypt.compare(password, foundUser.password)) {
+               const { password, ...result } = foundUser
+               return result;
+           }
+
+           return null;
+       }
+       return null
+
+   }
+   async login(user: any) {
+       const payload = { username: user.username, sub: user.id, role:user.role };
+
+       return {
+           access_token: this.jwt.sign(payload),
+       };
+   }
+```
+
+- Agora podemos implementar nossa estratégia de autenticação local do Passport. Crie um arquivo chamado local.strategy.ts na pasta do módulo auth e adicione o seguinte código:
+
+```typescript
+import { Strategy } from 'passport-local';
+import { PassportStrategy } from '@nestjs/passport';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { AuthService } from './service/auth.service';
+
+@Injectable()
+export class LocalStrategy extends PassportStrategy(Strategy) {
+  constructor(private authService: AuthService) {
+    super();
+  }
+
+  async validate(username: string, password: string): Promise<any> {
+    const foundUser = await this.authService.validateUser(username, password);
+    if (!foundUser) {
+      throw new UnauthorizedException();
+    }
+    return foundUser;
+  }
+}
+```
+
+- No trecho de código acima, você implementou uma estratégia de passaporte local. Não há opções de configuração, então nosso construtor simplesmente chama **super()** sem um objeto de opções.
+
+- Você também implementou o método **valid()**. O **Passport** chamará a função de verificação para cada estratégia usando um conjunto de parâmetros apropriado específico da estratégia. Para a estratégia local, o **Passport** espera um método **valid()** com a seguinte assinatura: validar(nome de usuário: string, senha:string): qualquer.
+
+- Em seguida, crie um arquivo **jwt-auth.guard.ts** na pasta do módulo **auth** e defina um **auth** **guard** personalizado com o trecho de código abaixo:
+
+```ts
+import { Injectable } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+
+@Injectable()
+export class LocalAuthGuard extends AuthGuard('local') {}
+```
+
+- Você usará o **AuthGuard** criado no trecho de código para proteger suas rotas de API de usuários não autorizados.
+
+- Agora crie um arquivo **jwt-strategy** na pasta do módulo **auth** para autenticar usuários e gerar **tokens** **jwt** para usuários logados com o trecho de código abaixo:
+
+```ts
+import { ExtractJwt, Strategy } from 'passport-jwt';
+import { PassportStrategy } from '@nestjs/passport';
+import { Injectable } from '@nestjs/common';
+import { jwtConstants } from './constants';
+
+@Injectable()
+export class JwtStrategy extends PassportStrategy(Strategy) {
+  constructor() {
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ignoreExpiration: false,
+      secretOrKey: jwtConstants.secret,
+    });
+  }
+
+  async validate(payload: any) {
+    return {
+      userId: payload.sub,
+      username: payload.username,
+      role: payload.role,
+    };
+  }
+}
+```
+
+- Em seguida, configure o módulo **jwt** no arquivo **auth.module.ts** na pasta do módulo **auth**. Antes disso, crie um arquivo **constants.ts** na mesma pasta do módulo auth para definir um **jwt** **secret** com o trecho de código abaixo:
+
+```ts
+export const jwtConstants = {
+  secret: 'wjeld-djeuedw399e3-uejheuii33-4jrjjejei3-rjdjfjf',
+};
+```
+
+- Você pode gerar um segredo **jwt** mais seguro na produção, mas usaremos aquele para fins de demonstração.
+
+- Agora importe todos os módulos necessários em seu arquivo **auth.module.ts** com o trecho de código abaixo:
+
+```ts
+…
+import { JwtModule } from '@nestjs/jwt';
+import { jwtConstants } from './constants';
+import { JwtStrategy } from './jwt.strategy';
+import { PassportModule } from '@nestjs/passport';
+import { LocalStrategy } from './local.strategy';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Users } from './user.entity';
+…
+```
+
+- Em seguida, no **array** de importações, configure o **jwt** com o trecho de código abaixo:
+
+```ts
+…
+imports: [
+   PassportModule,
+   JwtModule.register({
+     secret: jwtConstants.secret,
+     signOptions: { expiresIn: '60m' },
+   }),
+…
+```
+
+- No trecho de código acima, adicionamos o pacote **PassModule** para permitir que o passaporte lide com a autenticação dos usuários e configure o **jwt** usando o método de registro **JwtModule**. Passamos o segredo que criamos no arquivo de constantes e especificamos o tempo de expiração do **token** gerado (você pode reduzir ou aumentar o tempo dependendo do caso de uso).
