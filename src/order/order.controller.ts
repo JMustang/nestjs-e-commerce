@@ -1,8 +1,10 @@
+import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from './../auth/jwt-guard';
 import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { OrderEntity } from './order.entity';
 import { OrderService } from './order.service';
 
+@ApiTags('Order')
 @Controller('api/v1/order')
 export class OrderController {
   constructor(private orderService: OrderService) {}

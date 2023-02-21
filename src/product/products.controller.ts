@@ -1,3 +1,4 @@
+import { ApiTags } from '@nestjs/swagger';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { ProductEntity } from './product.entity';
 import { JwtAuthGuard } from '../auth/jwt-guard';
@@ -14,6 +15,7 @@ import {
   Body,
 } from '@nestjs/common';
 
+@ApiTags('Products')
 @Controller('api/v1/products')
 export class ProductsController {
   constructor(private productsService: ProductsService) {}
