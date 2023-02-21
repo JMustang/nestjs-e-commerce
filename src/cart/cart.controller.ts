@@ -1,3 +1,4 @@
+import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from './../auth/jwt-guard';
 import {
   Body,
@@ -10,6 +11,7 @@ import {
 import { CartEntity } from './cart.entity';
 import { CartService } from './cart.service';
 
+@ApiTags('Cart')
 @Controller('api/v1/cart')
 export class CartController {
   constructor(private cartService: CartService) {}
