@@ -1,15 +1,15 @@
-import { OrderEntity } from './order.entity';
+import { OrderModel } from '../models/order.model';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Users } from 'src/auth/user.entity';
-import { CartService } from 'src/cart/cart.service';
+import { Users } from 'src/models/user.model';
+import { CartService } from 'src/services/cart.service';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class OrderService {
   constructor(
-    @InjectRepository(OrderEntity)
-    private orderRepository: Repository<OrderEntity>,
+    @InjectRepository(OrderModel)
+    private orderRepository: Repository<OrderModel>,
     @InjectRepository(Users)
     private userRepository: Repository<Users>,
     private cartService: CartService,
@@ -51,7 +51,7 @@ export class OrderService {
       return { message: 'Order modified' };
     }
   }
-  async getOrders(user: string): Promise<OrderEntity[]> {
+  async getOrders(user: string): Promise<OrderModel[]> {
     const orders = await this.orderRepository.find({ relations: ['user'] });
     return orders.filter((order) => order.user?.username === user);
   }

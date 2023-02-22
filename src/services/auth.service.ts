@@ -1,4 +1,4 @@
-import { Users } from 'src/auth/user.entity';
+import { Users } from 'src/models/user.model';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';

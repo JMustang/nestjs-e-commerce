@@ -8,8 +8,8 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
 } from 'typeorm';
-import { CartEntity } from 'src/cart/cart.entity';
-import { OrderEntity } from 'src/order/order.entity';
+import { CartModel } from 'src/models/cart.model';
+import { OrderModel } from 'src/models/order.model';
 
 @Entity()
 export class Users {
@@ -31,11 +31,11 @@ export class Users {
   @UpdateDateColumn()
   updatedAt: string;
 
-  @OneToMany((type) => CartEntity, (cart) => cart.id)
+  @OneToMany((type) => CartModel, (cart) => cart.id)
   @JoinColumn()
-  cart: CartEntity[];
+  cart: CartModel[];
 
-  @OneToOne((type) => OrderEntity, (order) => order.id)
+  @OneToOne((type) => OrderModel, (order) => order.id)
   @JoinColumn()
-  order: OrderEntity;
+  order: OrderModel;
 }

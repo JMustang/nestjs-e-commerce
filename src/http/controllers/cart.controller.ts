@@ -1,5 +1,5 @@
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from './../auth/jwt-guard';
+import { JwtAuthGuard } from '../../guards/jwt-guard';
 import {
   Body,
   Controller,
@@ -8,8 +8,8 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { CartEntity } from './cart.entity';
-import { CartService } from './cart.service';
+import { CartModel } from '../../models/cart.model';
+import { CartService } from '../../services/cart.service';
 
 @ApiTags('Cart')
 @Controller('api/v1/cart')
@@ -29,7 +29,7 @@ export class CartController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getItemsInCart(@Request() req): Promise<CartEntity[]> {
+  async getItemsInCart(@Request() req): Promise<CartModel[]> {
     return await this.cartService.getItemsInCart(req.user.username);
   }
 }

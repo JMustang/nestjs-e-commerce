@@ -6,16 +6,16 @@ import {
   Column,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ProductEntity } from 'src/product/product.entity';
-import { Users } from 'src/auth/user.entity';
+import { ProductModel } from 'src/models/product.model';
+import { Users } from 'src/models/user.model';
 
 @Entity()
-export class OrderEntity {
+export class OrderModel {
   @PrimaryGeneratedColumn('uuid')
   id: number;
 
-  @OneToMany((type) => ProductEntity, (item) => item.id)
-  items: ProductEntity[];
+  @OneToMany((type) => ProductModel, (item) => item.id)
+  items: ProductModel[];
 
   @OneToOne((type) => Users, (user) => user.username)
   @JoinColumn()

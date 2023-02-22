@@ -132,8 +132,8 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
 } from 'typeorm';
-import { CartEntity } from 'src/cart/cart.entity';
-import { OrderEntity } from 'src/order/order.entity';
+import { CartModel } from 'src/cart/cart.entity';
+import { OrderModel } from 'src/order/order.entity';
 
 @Entity()
 export class Users {
@@ -155,13 +155,13 @@ export class Users {
   @UpdateDateColumn()
   updatedAt: String;
 
-  @OneToMany((type) => CartEntity, (cart) => cart.id)
+  @OneToMany((type) => CartModel, (cart) => cart.id)
   @JoinColumn()
-  cart: CartEntity[];
+  cart: CartModel[];
 
-  @OneToOne((type) => OrderEntity, (order) => order.id)
+  @OneToOne((type) => OrderModel, (order) => order.id)
   @JoinColumn()
-  order: OrderEntity;
+  order: OrderModel;
 }
 ```
 
@@ -173,7 +173,7 @@ export class Users {
 nest generate class product/product.entity –flat
 ```
 
-- O comando acima irá gerar um arquivo **product.entity.ts** na pasta do módulo **products**.
+- O comando acima irá gerar um arquivo **product.model.ts** na pasta do módulo **products**.
 
 Agora configure as propriedades da tabela de products com o trecho de código abaixo:
 
@@ -187,10 +187,10 @@ import {
   UpdateDateColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { CartEntity } from 'src/cart/cart.entity';
+import { CartModel } from 'src/cart/cart.entity';
 
 @Entity()
-export class ProductEntity {
+export class ProductModel {
   @PrimaryGeneratedColumn('uuid')
   id!: number;
 
@@ -209,9 +209,9 @@ export class ProductEntity {
   @UpdateDateColumn()
   updatedAt: String;
 
-  @OneToMany((type) => CartEntity, (cart) => cart.id)
+  @OneToMany((type) => CartModel, (cart) => cart.id)
   @JoinColumn()
-  cart: CartEntity[];
+  cart: CartModel[];
 }
 ```
 
@@ -223,7 +223,7 @@ Em seguida crie a entidade **cart** com o comando abaixo:
 nest generate class cart/cart.entity –flat
 ```
 
-- O comando acima irá gerar um arquivo **cart.entity.ts** na pasta do módulo **cart**. Agora adicione o trecho de código abaixo ao arquivo que você criou para configurar as propriedades da tabela **cart**.
+- O comando acima irá gerar um arquivo **cart.model.ts** na pasta do módulo **cart**. Agora adicione o trecho de código abaixo ao arquivo que você criou para configurar as propriedades da tabela **cart**.
 
 ```typescript
 import {
@@ -234,12 +234,12 @@ import {
   Column,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { OrderEntity } from 'src/order/order.entity';
-import { ProductEntity } from 'src/product/product.entity';
+import { OrderModel } from 'src/order/order.entity';
+import { ProductModel } from 'src/product/product.entity';
 import { Users } from 'src/auth/user.entity';
 
 @Entity()
-export class CartEntity {
+export class CartModel {
   @PrimaryGeneratedColumn('uuid')
   id: number;
 
@@ -249,9 +249,9 @@ export class CartEntity {
   @Column()
   quantity: number;
 
-  @ManyToOne((type) => ProductEntity, (order) => order.id)
+  @ManyToOne((type) => ProductModel, (order) => order.id)
   @JoinColumn()
-  item: ProductEntity;
+  item: ProductModel;
 
   @ManyToOne((type) => Users, (user) => user.username)
   @JoinColumn()
@@ -267,7 +267,7 @@ export class CartEntity {
 nest generate class order/order.entity –flat
 ```
 
-- O comando acima irá gerar um arquivo **order.entity.ts** na pasta do módulo de **order**. Abra o **order.entity.ts** e configure a tabela do banco de dados com o comando abaixo:
+- O comando acima irá gerar um arquivo **order.model.ts** na pasta do módulo de **order**. Abra o **order.model.ts** e configure a tabela do banco de dados com o comando abaixo:
 
 ```typescript
 import {
@@ -278,16 +278,16 @@ import {
   Column,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ProductEntity } from 'src/product/product.entity';
+import { ProductModel } from 'src/product/product.entity';
 import { Users } from 'src/auth/user.entity';
 
 @Entity()
-export class OrderEntity {
+export class OrderModel {
   @PrimaryGeneratedColumn('uuid')
   id: number;
 
-  @OneToMany((type) => ProductEntity, (item) => item.id)
-  items: ProductEntity[];
+  @OneToMany((type) => ProductModel, (item) => item.id)
+  items: ProductModel[];
 
   @OneToOne((type) => Users, (user) => user.username)
   @JoinColumn()

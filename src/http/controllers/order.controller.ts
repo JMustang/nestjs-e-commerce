@@ -1,8 +1,8 @@
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from './../auth/jwt-guard';
+import { JwtAuthGuard } from '../../guards/jwt-guard';
 import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
-import { OrderEntity } from './order.entity';
-import { OrderService } from './order.service';
+import { OrderModel } from '../../models/order.model';
+import { OrderService } from '../../services/order.service';
 
 @ApiTags('Order')
 @Controller('api/v1/order')
@@ -17,7 +17,7 @@ export class OrderController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getOrders(@Request() req): Promise<OrderEntity[]> {
+  async getOrders(@Request() req): Promise<OrderModel[]> {
     return await this.orderService.getOrders(req.user.username);
   }
 }

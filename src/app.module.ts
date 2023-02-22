@@ -1,10 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { AuthModule } from './auth/auth.module';
-import { ProductModule } from './product/product.module';
-import { CartModule } from './cart/cart.module';
-import { OrderModule } from './order/order.module';
+import { AuthModule } from './modules/auth.module';
+import { ProductModule } from './modules/product.module';
+import { CartModule } from './modules/cart.module';
+import { OrderModule } from './modules/order.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
@@ -20,9 +18,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     CartModule,
     OrderModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
-export class AppModule {
-  // App module
-}
+export class AppModule {}

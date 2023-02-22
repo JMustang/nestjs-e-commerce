@@ -1,7 +1,7 @@
 import { AuthGuard } from '@nestjs/passport';
 import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { Users } from './user.entity';
+import { AuthService } from '../../services/auth.service';
+import { Users } from '../../models/user.model';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Auth')

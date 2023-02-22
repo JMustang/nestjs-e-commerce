@@ -6,12 +6,12 @@ import {
   Column,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { OrderEntity } from 'src/order/order.entity';
-import { ProductEntity } from 'src/product/product.entity';
-import { Users } from 'src/auth/user.entity';
+import { OrderModel } from 'src/models/order.model';
+import { ProductModel } from 'src/models/product.model';
+import { Users } from 'src/models/user.model';
 
 @Entity()
-export class CartEntity {
+export class CartModel {
   @PrimaryGeneratedColumn('uuid')
   id: number;
 
@@ -21,9 +21,9 @@ export class CartEntity {
   @Column()
   quantity: number;
 
-  @ManyToOne((type) => ProductEntity, (order) => order.id)
+  @ManyToOne((type) => ProductModel, (order) => order.id)
   @JoinColumn()
-  item: ProductEntity;
+  item: ProductModel;
 
   @ManyToOne((type) => Users, (user) => user.username)
   @JoinColumn()

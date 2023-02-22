@@ -7,10 +7,10 @@ import {
   UpdateDateColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { CartEntity } from 'src/cart/cart.entity';
+import { CartModel } from 'src/models/cart.model';
 
 @Entity()
-export class ProductEntity {
+export class ProductModel {
   @PrimaryGeneratedColumn('uuid')
   id!: number;
 
@@ -29,7 +29,7 @@ export class ProductEntity {
   @UpdateDateColumn()
   updatedAt: string;
 
-  @OneToMany((type) => CartEntity, (cart) => cart.id)
+  @OneToMany((type) => CartModel, (cart) => cart.id)
   @JoinColumn()
-  cart: CartEntity[];
+  cart: CartModel[];
 }

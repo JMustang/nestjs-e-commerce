@@ -1,6 +1,6 @@
-import { ProductsService } from './../product/products.service';
-import { Users } from './../auth/user.entity';
-import { CartEntity } from './cart.entity';
+import { ProductsService } from './products.service';
+import { Users } from '../models/user.model';
+import { CartModel } from '../models/cart.model';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -8,8 +8,8 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class CartService {
   constructor(
-    @InjectRepository(CartEntity)
-    private cartRepository: Repository<CartEntity>,
+    @InjectRepository(CartModel)
+    private cartRepository: Repository<CartModel>,
     @InjectRepository(Users)
     private usersRepository: Repository<Users>,
     private productsService: ProductsService,
@@ -55,7 +55,7 @@ export class CartService {
     return null;
   }
 
-  async getItemsInCart(user: string): Promise<CartEntity[]> {
+  async getItemsInCart(user: string): Promise<CartModel[]> {
     const userCart = await this.cartRepository.find({
       relations: ['item', 'user'],
     });
