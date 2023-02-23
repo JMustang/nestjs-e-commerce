@@ -1,12 +1,10 @@
 import {
   Entity,
-  OneToOne,
   ManyToOne,
   JoinColumn,
   Column,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { OrderModel } from 'src/models/order.model';
 import { ProductModel } from 'src/models/product.model';
 import { Users } from 'src/models/user.model';
 

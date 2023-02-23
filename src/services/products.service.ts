@@ -16,7 +16,7 @@ export class ProductsService {
   }
 
   async create(product: ProductModel, user: Users): Promise<ProductModel> {
-    if (user.role === 'admin') {
+    if (user.roles.some((role) => role.initials === 'admin')) {
       return await this.productRepository.save(product);
     }
     throw new UnauthorizedException({
@@ -33,7 +33,7 @@ export class ProductsService {
     product: ProductModel,
     user: Users,
   ): Promise<UpdateResult> {
-    if (user.role === 'admin') {
+    if (user.roles.some((role) => role.initials === 'admin')) {
       return await this.productRepository.update(id, product);
     }
     throw new UnauthorizedException({
@@ -42,7 +42,7 @@ export class ProductsService {
   }
 
   async delete(id: number, user: Users): Promise<DeleteResult> {
-    if (user.role === 'admin') {
+    if (user.roles.some((role) => role.initials === 'admin')) {
       return await this.productRepository.delete(id);
     }
     throw new UnauthorizedException({

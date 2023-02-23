@@ -1,0 +1,40 @@
+import { ValueTransformer } from 'typeorm';
+
+export function isNullOrUndefined<T>(
+  value: T | null | undefined,
+): value is null | undefined {
+  return typeof value === 'undefined' || value === null;
+}
+
+export class IntegerTransformer implements ValueTransformer {
+  private static instance: IntegerTransformer;
+
+  from(data?: string | null): number | null {
+    if (!isNullOrUndefined(data)) {
+      const res = parseInt(data, 10);
+      if (Number.isNaN(res)) {
+        return null;
+      }
+      return res;
+    }
+    return null;
+  }
+
+  to(data?: number | null): number | null {
+    if (!isNullOrUndefined(data)) {
+      return data;
+    }
+    return null;
+  }
+
+  private constructor() {
+    // this class is singleton
+  }
+
+  public static getInstance(): IntegerTransformer {
+    if (!IntegerTransformer.instance) {
+      IntegerTransformer.instance = new IntegerTransformer();
+    }
+    return IntegerTransformer.instance;
+  }
+}
